@@ -221,16 +221,8 @@ async function callIA(system,user,maxTokens=900){
   }catch(e){console.error("IA erro:",e);return "Erro ao chamar IA: "+e.message;}
 }
 async function iaNCM(ncm,desc){
-  const prompt=[
-    "Produto:"+desc+" NCM:"+ncm,
-    "Retorne SOMENTE este JSON com aliquotas vigentes na importacao:",
-    '{"ncm_validado":"","ncm_original_correto":false,"descricao_tec":"","ii":0,"ipi":0,"pis":2.1,"cofins":9.65,"justificativa":""}',
-    "REGRAS: ii=aliquota TEC, ipi=aliquota IPI, pis=2.1 padrao Lei 10865/2004, cofins=9.65 padrao. NUNCA retorne pis=0 ou cofins=0 para produtos normais."
-  ].join("\n");
-  const txt=await callIA(
-    "Especialista TEC/TIPI brasileira. Responda SOMENTE JSON valido sem markdown.",
-    prompt
-  );
+  const prompt="Produto:"+desc+" NCM:"+ncm+" Retorne JSON: {ncm_validado:'',ncm_original_correto:false,descricao_tec:'',ii:0,ipi:0,pis:2.1,cofins:9.65,justificativa:''}";
+  const txt=await callIA("Especialista TEC/TIPI brasileira. Responda SOMENTE JSON valido.",prompt);
   try{return JSON.parse(txt);}catch{return null;}
 }
 async function iaSugerirEstado(ncm,desc,valorUSD,regime){
