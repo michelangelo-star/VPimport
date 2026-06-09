@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useCallback, useEffect } from "react";
 
 // ══════════════════════════════════════════════════
@@ -378,8 +379,8 @@ function Login({onLogin}){
 function Sistema({sessao,onLogout}){
   const[pag,setPag]=useState("dashboard");
   const[menu,setMenu]=useState(true);
-  const isSA=sessao.perfil==="superadmin";
-  const eId=sessao.empresaId;
+  const isSA=sessao?.perfil==="superadmin";
+  const eId=sessao?.empresaId;
   const[clientes,setClientes]=useState([]);
   const[fornecedores,setFornecedores]=useState([]);
   const[transportadoras,setTransportadoras]=useState([]);
@@ -436,7 +437,7 @@ function Sistema({sessao,onLogout}){
           </button>)}
         </div>
         <div style={{padding:"7px 6px",borderTop:"1px solid rgba(255,255,255,.06)"}}>
-          {menu&&<div style={{padding:"8px 10px",borderRadius:8,background:"rgba(255,255,255,.05)",marginBottom:5}}><div style={{fontSize:10,fontWeight:600,color:"#fff",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{sessao.nome}</div><div style={{fontSize:8,color:VP.ciano,marginTop:1,textTransform:"uppercase",letterSpacing:".5px"}}>{sessao.perfil}</div></div>}
+          {menu&&<div style={{padding:"8px 10px",borderRadius:8,background:"rgba(255,255,255,.05)",marginBottom:5}}><div style={{fontSize:10,fontWeight:600,color:"#fff",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{sessao?.nome}</div><div style={{fontSize:8,color:VP.ciano,marginTop:1,textTransform:"uppercase",letterSpacing:".5px"}}>{sessao?.perfil}</div></div>}
           <button onClick={()=>setMenu(v=>!v)} style={{...bsSty,width:"100%",justifyContent:"center",background:"rgba(255,255,255,.05)",border:"none",color:"#9CA3AF",fontSize:9,marginBottom:4}}>{menu?"◀ Recolher":"▶"}</button>
           <button onClick={onLogout} style={{...bsSty,width:"100%",justifyContent:"center",background:"rgba(239,68,68,.07)",border:"1px solid rgba(239,68,68,.28)",color:"#EF4444",fontSize:9}}>{menu?"Sair":"✕"}</button>
         </div>
@@ -447,7 +448,7 @@ function Sistema({sessao,onLogout}){
           <div style={{fontSize:13,fontWeight:700,color:VP.dark}}>{nav.find(n=>n.id===pag)?.l||pag}</div>
           <div style={{display:"flex",alignItems:"center",gap:9}}>
             <div style={{fontSize:10,color:"#9CA3AF"}}>{new Date().toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"short",year:"numeric"})}</div>
-            <div style={{width:30,height:30,borderRadius:"50%",background:VP.grad,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:700,fontSize:12}}>{sessao.nome.charAt(0)}</div>
+            <div style={{width:30,height:30,borderRadius:"50%",background:VP.grad,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:700,fontSize:12}}>{sessao?.nome.charAt(0)}</div>
           </div>
         </div>
         {loading?<Spin/>:(
@@ -572,7 +573,7 @@ function Dashboard({agenda,clientes,fornecedores,simulacoes,sessao}){
   const maxA=Math.max(...meses.map(m=>agenda.filter(a=>a.criado_em?.startsWith(m.m)).length),1);
   return(
     <div className="card">
-      <PH titulo={`Olá, ${sessao.nome.split(" ")[0]}! 👋`} sub="Dashboard executivo de importações"/>
+      <PH titulo={`Olá, ${sessao?.nome.split(" ")[0]}! 👋`} sub="Dashboard executivo de importações"/>
       <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:13,marginBottom:13}}>
         {[{l:"Total na Agenda",v:agenda.length,c:VP.azul,ic:"📋"},{l:"Clientes",v:clientes.length,c:"#10B981",ic:"🏢"},{l:"Fornecedores",v:fornecedores.length,c:"#8B5CF6",ic:"🏭"},{l:"Demurrage no Ano",v:fmtBRL(demurrage),c:"#EF4444",ic:"⚠️"}].map(({l,v,c,ic})=>(
           <div key={l} style={{background:"#fff",borderRadius:11,padding:"14px 16px",boxShadow:"0 2px 10px rgba(0,74,247,.05)",borderLeft:`3px solid ${c}`}}>
@@ -904,9 +905,9 @@ function Simulador({clientes,fornecedores,transportadoras,corretoras,setSimulaco
     try{
       const cl=clientes.find(c=>c.id===clienteId);const fn=fornecedores.find(f=>f.id===fornecedorId);
       const tr=transportadoras.find(t=>t.id===transportadoraId);const co=corretoras.find(c=>c.id===corretoraId);
-      const sim=await db.insert("simulacoes",{empresa_id:sessao.empresaId,cliente_id:clienteId||null,cliente_nome:cl?.nome||"",fornecedor_id:fornecedorId||null,fornecedor_nome:fn?.nome||"",transportadora_id:transportadoraId||null,transportadora_nome:tr?.nome||"",corretora_id:corretoraId||null,corretora_nome:co?.nome||"",nome,regime,modalidade,destinacao,moeda:moedaSim,estado:estadoCalculo,estado_cliente:estadoCliente,estado_desembaraco:usarDesembaraco?estadoDesembaraco:null,cambio:res.cambio,frete:parseFloat(frete||0),seguro:parseFloat(seguro||0),despachante:parseFloat(despachante||0),alfandega:parseFloat(alfandega||0),comissao_pct:parseFloat(comPct||0),comissao_base:comBase,comissao_valor:res.tCom,total_invoice_usd:res.tI,total_invoice_brl:res.tIbrl,custos_totais_brl:res.cT,total_impostos_brl:res.tImp,total_geral_brl:res.tG,status:"finalizada"});
+      const sim=await db.insert("simulacoes",{empresa_id:sessao?.empresaId,cliente_id:clienteId||null,cliente_nome:cl?.nome||"",fornecedor_id:fornecedorId||null,fornecedor_nome:fn?.nome||"",transportadora_id:transportadoraId||null,transportadora_nome:tr?.nome||"",corretora_id:corretoraId||null,corretora_nome:co?.nome||"",nome,regime,modalidade,destinacao,moeda:moedaSim,estado:estadoCalculo,estado_cliente:estadoCliente,estado_desembaraco:usarDesembaraco?estadoDesembaraco:null,cambio:res.cambio,frete:parseFloat(frete||0),seguro:parseFloat(seguro||0),despachante:parseFloat(despachante||0),alfandega:parseFloat(alfandega||0),comissao_pct:parseFloat(comPct||0),comissao_base:comBase,comissao_valor:res.tCom,total_invoice_usd:res.tI,total_invoice_brl:res.tIbrl,custos_totais_brl:res.cT,total_impostos_brl:res.tImp,total_geral_brl:res.tG,status:"finalizada"});
       await Promise.all(res.prods.map(p=>db.insert("simulacao_produtos",{simulacao_id:sim.id,descricao:p.desc,ncm:p.ncm,qtd:parseFloat(p.qtd||0),peso:parseFloat(p.peso||0),valor_unit_usd:parseFloat(p.vUnit||0),valor_total_usd:p.vt,custo_rateado_usd:p.cr,aliq_ii:p.al?.II||0,aliq_ipi:p.al?.IPI||0,aliq_pis:p.al?.PIS||2.1,aliq_cofins:p.al?.COFINS||9.65,total_impostos_brl:p.tImp,credito_pis_cofins_brl:p.creditoBRL||0,custo_bruto_brl:p.custoBrutoBRL||p.ct,comissao_brl:p.com,custo_total_brl:p.ct,custo_unit_brl:p.cu,descricao_tec:p.al?.dt||"",justificativa_ncm:p.al?.jus||"",ncm_validado:p.al?.ncmV||""})));
-      for(const p of res.prods){if(!p.desc)continue;const ex=await db.getOne("produtos_importados",{empresa_id:sessao.empresaId,ncm:p.ncm});if(!ex){const np=await db.insert("produtos_importados",{empresa_id:sessao.empresaId,simulacao_id:sim.id,descricao:p.desc,ncm:p.ncm,unidade:"UN",custo_medio_brl:p.cu,custo_unit_ultima_sim:p.cu,ativo:true});setProdutos(prev=>[np,...prev]);}}
+      for(const p of res.prods){if(!p.desc)continue;const ex=await db.getOne("produtos_importados",{empresa_id:sessao?.empresaId,ncm:p.ncm});if(!ex){const np=await db.insert("produtos_importados",{empresa_id:sessao?.empresaId,simulacao_id:sim.id,descricao:p.desc,ncm:p.ncm,unidade:"UN",custo_medio_brl:p.cu,custo_unit_ultima_sim:p.cu,ativo:true});setProdutos(prev=>[np,...prev]);}}
       setSimulacoes(prev=>[sim,...prev]);alert(`✓ "${nome}" salva! Produtos criados automaticamente.`);
     }catch(e){alert("Erro ao salvar: "+e.message);}setSalvando(false);
   }
@@ -1180,12 +1181,12 @@ function SimulacoesLista({simulacoes,setSimulacoes,setPag,sessao}){
     try{
       // Gerar número do processo automático
       const ano=new Date().getFullYear();
-      const todos=await db.get("importacoes",{empresa_id:sessao.empresaId});
+      const todos=await db.get("importacoes",{empresa_id:sessao?.empresaId});
       const seq=String((todos||[]).length+1).padStart(3,"0");
       const numero="IMP-"+ano+"-"+seq;
       // Criar processo de importação
       const proc=await db.insert("importacoes",{
-        empresa_id:sessao.empresaId,
+        empresa_id:sessao?.empresaId,
         numero_processo:numero,
         simulacao_id:sim.id,
         fornecedor_id:sim.fornecedor_id||null,
@@ -1216,7 +1217,7 @@ function SimulacoesLista({simulacoes,setSimulacoes,setPag,sessao}){
       });
       // Criar item na agenda/kanban
       await db.insert("agenda",{
-        empresa_id:sessao.empresaId,
+        empresa_id:sessao?.empresaId,
         importacao_id:proc.id,
         cliente_id:sim.cliente_id||null,
         cliente_nome:sim.cliente_nome||"Sem cliente",
@@ -1236,7 +1237,7 @@ function SimulacoesLista({simulacoes,setSimulacoes,setPag,sessao}){
   async function salvarD(){setSavD(true);try{const a=await db.update("simulacoes",sel.id,{demurrage:parseFloat(editD||0)});setSel(a);setSimulacoes(p=>p.map(s=>s.id===sel.id?a:s));alert("✓ Demurrage salvo!");}catch(e){alert("Erro: "+e.message);}setSavD(false);}
   async function addDoc(){
     if(!nd.nome||!nd.link){alert("Nome e link são obrigatórios.");return;}setSavDoc(true);
-    try{const d=await db.insert("documentos_importacao",{tipo_grupo:nd.grupo,tipo_documento:nd.tipo,nome_arquivo:nd.nome,link_arquivo:nd.link,descricao:nd.descricao,data_documento:nd.data_documento,numero_documento:nd.numero_documento,simulacao_id:sel.id,empresa_id:sessao.empresaId,id_importacao:sel.nome});setDocs(p=>[d,...p]);setNd(p=>({...p,nome:"",link:"",descricao:"",numero_documento:"",data_documento:""}));}
+    try{const d=await db.insert("documentos_importacao",{tipo_grupo:nd.grupo,tipo_documento:nd.tipo,nome_arquivo:nd.nome,link_arquivo:nd.link,descricao:nd.descricao,data_documento:nd.data_documento,numero_documento:nd.numero_documento,simulacao_id:sel.id,empresa_id:sessao?.empresaId,id_importacao:sel.nome});setDocs(p=>[d,...p]);setNd(p=>({...p,nome:"",link:"",descricao:"",numero_documento:"",data_documento:""}));}
     catch(e){alert("Erro: "+e.message);}setSavDoc(false);
   }
   async function remDoc(id){if(!window.confirm("Remover?"))return;try{await db.delete("documentos_importacao",id);setDocs(p=>p.filter(d=>d.id!==id));}catch{alert("Erro.");}}
@@ -1461,7 +1462,7 @@ function PrecoVenda({simulacoes,sessao}){
     setSaving(true);
     try{
       const nomeSim=simulacoes.find(s=>s.id===simId)?.nome||"";
-      const sv=await db.insert("simulacao_preco_venda",{empresa_id:sessao.empresaId,simulacao_id:simId,nome:"Preco — "+nomeSim});
+      const sv=await db.insert("simulacao_preco_venda",{empresa_id:sessao?.empresaId,simulacao_id:simId,nome:"Preco — "+nomeSim});
       if(!sv?.id)throw new Error("Falha ao criar registro");
       await Promise.all(itens.map(it=>db.insert("simulacao_preco_itens",{simulacao_preco_id:sv.id,simulacao_produto_id:it.id,descricao:it.desc,custo_unit_brl:Number(it.custo)||0,margem_pct:parseFloat(it.mg||0),markup_pct:parseFloat(it.mk||0),preco_venda_margem:Number(it.pMg)||0,preco_venda_markup:Number(it.pMk)||0,preco_venda_definido:parseFloat(it.pDef||0)})));
       alert("✓ Simulacao de preco salva!");
@@ -1536,7 +1537,7 @@ function Viabilidade({simulacoes,sessao}){
     const sim=simulacoes.find(s=>s.id===simId);
     const prods=await db.get("simulacao_produtos",{simulacao_id:simId});
     const r=await iaViabilidade({simulacao:{nome:sim?.nome,regime:sim?.regime,modalidade:sim?.modalidade,estado:sim?.estado,cambio:sim?.cambio,total_invoice_brl:sim?.total_invoice_brl,total_geral_brl:sim?.total_geral_brl,produtos:prods.map(p=>({descricao:p.descricao,ncm:p.ncm,qtd:p.qtd,custo_unit_brl:p.custo_unit_brl}))},concorrentes:validos});
-    await db.insert("analise_viabilidade",{empresa_id:sessao.empresaId,simulacao_id:simId,nome:`Análise — ${sim?.nome}`,analise_completa:r});
+    await db.insert("analise_viabilidade",{empresa_id:sessao?.empresaId,simulacao_id:simId,nome:`Análise — ${sim?.nome}`,analise_completa:r});
     setResultado(r);setAnalisando(false);
   }
   const veredito=resultado?(resultado.toLowerCase().includes("inviável")?"Inviável":resultado.toLowerCase().includes("atenção")?"Atenção":resultado.toLowerCase().includes("viável")?"Viável":null):null;
@@ -1592,8 +1593,8 @@ function Viabilidade({simulacoes,sessao}){
 // ══════════════════════════════════════════════════
 function useCRUD(tabela,sessao,incluirEmpresa=true){
   const[items,setItems]=useState(null);
-  async function load(filtros={}){const f=incluirEmpresa?{empresa_id:sessao.empresaId,...filtros}:filtros;const r=await db.get(tabela,f);setItems(r||[]);}
-  async function save(form,editId){if(editId){const a=await db.update(tabela,editId,incluirEmpresa?{...form,empresa_id:sessao.empresaId}:form);setItems(p=>p.map(x=>x.id===editId?a:x));return a;}else{const n=await db.insert(tabela,incluirEmpresa?{...form,empresa_id:sessao.empresaId}:form);setItems(p=>[n,...p]);return n;}}
+  async function load(filtros={}){const f=incluirEmpresa?{empresa_id:sessao?.empresaId,...filtros}:filtros;const r=await db.get(tabela,f);setItems(r||[]);}
+  async function save(form,editId){if(editId){const a=await db.update(tabela,editId,incluirEmpresa?{...form,empresa_id:sessao?.empresaId}:form);setItems(p=>p.map(x=>x.id===editId?a:x));return a;}else{const n=await db.insert(tabela,incluirEmpresa?{...form,empresa_id:sessao?.empresaId}:form);setItems(p=>[n,...p]);return n;}}
   async function remove(id){await db.delete(tabela,id);setItems(p=>p.filter(x=>x.id!==id));}
   return{items,load,save,remove};
 }
@@ -1608,7 +1609,7 @@ function Despachantes({despachantes,setDespachantes,sessao}){
   const filtrado=despachantes.filter(d=>!busca||d.nome?.toLowerCase().includes(busca.toLowerCase())||d.cidade?.toLowerCase().includes(busca.toLowerCase())||d.especialidades?.toLowerCase().includes(busca.toLowerCase()));
   function abrir(d){setEdit(d||null);setForm(d?{...vazio,...d}:vazio);setView("form");}
   async function excluir(id){if(!window.confirm("Excluir despachante?"))return;try{await db.delete("despachantes",id);setDespachantes(p=>p.filter(d=>d.id!==id));}catch{alert("Erro.");}}
-  async function salvar(){if(!form.nome)return;setSaving(true);try{if(edit){const a=await db.update("despachantes",edit.id,{...form,empresa_id:sessao.empresaId});setDespachantes(p=>p.map(d=>d.id===edit.id?a:d));}else{const n=await db.insert("despachantes",{...form,empresa_id:sessao.empresaId});setDespachantes(p=>[n,...p]);}setView("lista");}catch(e){alert("Erro: "+e.message);}setSaving(false);}
+  async function salvar(){if(!form.nome)return;setSaving(true);try{if(edit){const a=await db.update("despachantes",edit.id,{...form,empresa_id:sessao?.empresaId});setDespachantes(p=>p.map(d=>d.id===edit.id?a:d));}else{const n=await db.insert("despachantes",{...form,empresa_id:sessao?.empresaId});setDespachantes(p=>[n,...p]);}setView("lista");}catch(e){alert("Erro: "+e.message);}setSaving(false);}
   if(view==="form")return(
     <div className="card">
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}><BS onClick={()=>setView("lista")}>← Voltar</BS><PH titulo={edit?"Editar Despachante":"Novo Despachante Aduaneiro"} sub="Credenciado pela Receita Federal — habilitado para desembaraço"/></div>
@@ -1678,7 +1679,7 @@ function Clientes({clientes,setClientes,sessao}){
   const[form,setForm]=useState(vazio);const upd=(k,v)=>setForm(p=>({...p,[k]:v}));
   function abrir(c){setEdit(c||null);setForm(c?{...vazio,...c}:vazio);setView("form");}
   async function excluir(id){if(!window.confirm("Excluir?"))return;try{await db.delete("clientes",id);setClientes(p=>p.filter(c=>c.id!==id));}catch{alert("Erro.");}}
-  async function salvar(){if(!form.nome)return;setSaving(true);try{if(edit){const a=await db.update("clientes",edit.id,{...form,empresa_id:sessao.empresaId});setClientes(p=>p.map(c=>c.id===edit.id?a:c));}else{const n=await db.insert("clientes",{...form,empresa_id:sessao.empresaId});setClientes(p=>[n,...p]);}setView("lista");}catch(e){alert("Erro: "+e.message);}setSaving(false);}
+  async function salvar(){if(!form.nome)return;setSaving(true);try{if(edit){const a=await db.update("clientes",edit.id,{...form,empresa_id:sessao?.empresaId});setClientes(p=>p.map(c=>c.id===edit.id?a:c));}else{const n=await db.insert("clientes",{...form,empresa_id:sessao?.empresaId});setClientes(p=>[n,...p]);}setView("lista");}catch(e){alert("Erro: "+e.message);}setSaving(false);}
   if(view==="form")return(
     <div className="card">
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}><BS onClick={()=>setView("lista")}>← Voltar</BS><PH titulo={edit?"Editar Cliente":"Novo Cliente"}/></div>
@@ -1733,7 +1734,7 @@ function Fornecedores({fornecedores,setFornecedores,sessao}){
   const filtrado=fornecedores.filter(f=>!busca||f.nome?.toLowerCase().includes(busca.toLowerCase())||f.pais?.toLowerCase().includes(busca.toLowerCase())||f.categorias?.toLowerCase().includes(busca.toLowerCase()));
   function abrir(c){setEdit(c||null);setForm(c?{...vazio,...c}:vazio);setView("form");}
   async function excluir(id){if(!window.confirm("Excluir?"))return;try{await db.delete("fornecedores",id);setFornecedores(p=>p.filter(f=>f.id!==id));}catch{alert("Erro.");}}
-  async function salvar(){if(!form.nome)return;setSaving(true);try{if(edit){const a=await db.update("fornecedores",edit.id,{...form,empresa_id:sessao.empresaId});setFornecedores(p=>p.map(f=>f.id===edit.id?a:f));}else{const n=await db.insert("fornecedores",{...form,empresa_id:sessao.empresaId});setFornecedores(p=>[n,...p]);}setView("lista");}catch(e){alert("Erro: "+e.message);}setSaving(false);}
+  async function salvar(){if(!form.nome)return;setSaving(true);try{if(edit){const a=await db.update("fornecedores",edit.id,{...form,empresa_id:sessao?.empresaId});setFornecedores(p=>p.map(f=>f.id===edit.id?a:f));}else{const n=await db.insert("fornecedores",{...form,empresa_id:sessao?.empresaId});setFornecedores(p=>[n,...p]);}setView("lista");}catch(e){alert("Erro: "+e.message);}setSaving(false);}
   if(view==="form")return(
     <div className="card">
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}><BS onClick={()=>setView("lista")}>← Voltar</BS><PH titulo={edit?"Editar Fornecedor":"Novo Fornecedor"} sub="Cadastro de fornecedor estrangeiro"/></div>
@@ -1866,7 +1867,7 @@ function Corretoras({corretoras,setCorretoras,sessao}){
   const[form,setForm]=useState(vazio);const upd=(k,v)=>setForm(p=>({...p,[k]:v}));
   function abrir(c){setEdit(c||null);setForm(c?{...vazio,...c}:vazio);setView("form");}
   async function excluir(id){if(!window.confirm("Excluir?"))return;try{await db.delete("corretoras_cambio",id);setCorretoras(p=>p.filter(c=>c.id!==id));}catch{alert("Erro.");}}
-  async function salvar(){if(!form.nome)return;setSaving(true);try{if(edit){const a=await db.update("corretoras_cambio",edit.id,{...form,empresa_id:sessao.empresaId});setCorretoras(p=>p.map(c=>c.id===edit.id?a:c));}else{const n=await db.insert("corretoras_cambio",{...form,empresa_id:sessao.empresaId,ativo:true});setCorretoras(p=>[n,...p]);}setView("lista");}catch(e){alert("Erro: "+e.message);}setSaving(false);}
+  async function salvar(){if(!form.nome)return;setSaving(true);try{if(edit){const a=await db.update("corretoras_cambio",edit.id,{...form,empresa_id:sessao?.empresaId});setCorretoras(p=>p.map(c=>c.id===edit.id?a:c));}else{const n=await db.insert("corretoras_cambio",{...form,empresa_id:sessao?.empresaId,ativo:true});setCorretoras(p=>[n,...p]);}setView("lista");}catch(e){alert("Erro: "+e.message);}setSaving(false);}
   if(view==="form")return(
     <div className="card">
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}><BS onClick={()=>setView("lista")}>← Voltar</BS><PH titulo={edit?"Editar Corretora":"Nova Corretora de Câmbio"}/></div>
@@ -1931,7 +1932,7 @@ function Corretoras({corretoras,setCorretoras,sessao}){
 function Produtos({produtos,setProdutos,fornecedores,sessao}){
   const[view,setView]=useState("lista");const[edit,setEdit]=useState(null);const[saving,setSaving]=useState(false);const[busca,setBusca]=useState("");
   const[ncms,setNcms]=useState([]);
-  useEffect(()=>{db.get("ncm",{empresa_id:sessao.empresaId}).then(r=>setNcms(r||[])).catch(()=>setNcms([]));},[]);
+  useEffect(()=>{db.get("ncm",{empresa_id:sessao?.empresaId}).then(r=>setNcms(r||[])).catch(()=>setNcms([]));},[]);
   const vazio={sku:"",descricao:"",descricao_ingles:"",marca:"",fabricante_id:"",ncm_id:"",ncm_codigo:"",unidade:"UN",peso_liquido:"",peso_bruto:"",comprimento:"",largura:"",altura:"",cubagem:"",requer_anvisa:false,numero_registro_anvisa:"",tipo_registro_anvisa:"",validade_registro_anvisa:"",requer_inmetro:false,numero_inmetro:"",requer_anatel:false,numero_anatel:"",custo_medio_brl:"",preco_venda:"",observacoes:"",ativo:true};
   const[form,setForm]=useState(vazio);const upd=(k,v)=>setForm(p=>({...p,[k]:v}));
   const filtrado=produtos.filter(p=>!busca||p.descricao?.toLowerCase().includes(busca.toLowerCase())||p.sku?.toLowerCase().includes(busca.toLowerCase())||p.marca?.toLowerCase().includes(busca.toLowerCase()));
@@ -1949,7 +1950,7 @@ function Produtos({produtos,setProdutos,fornecedores,sessao}){
   async function excluir(id){if(!window.confirm("Excluir produto?"))return;try{await db.delete("produtos_importados",id);setProdutos(p=>p.filter(x=>x.id!==id));}catch{try{await db.delete("produtos",id);setProdutos(p=>p.filter(x=>x.id!==id));}catch{alert("Erro.");}}}
   async function salvar(){if(!form.descricao)return;setSaving(true);
     try{
-      const dados={...form,empresa_id:sessao.empresaId,
+      const dados={...form,empresa_id:sessao?.empresaId,
         peso_liquido:parseFloat(form.peso_liquido||0)||null,
         peso_bruto:parseFloat(form.peso_bruto||0)||null,
         comprimento:parseFloat(form.comprimento||0)||null,
@@ -2084,7 +2085,7 @@ function Agenda({agenda,setAgenda,clientes,sessao}){
     if(!novoSt)return;
     try{
       const att=await db.update("agenda",item.id,{status:novoSt});
-      await db.insert("agenda_updates",{agenda_id:item.id,status:novoSt,texto:"Status avancado para: "+novoSt,autor:sessao.nome});
+      await db.insert("agenda_updates",{agenda_id:item.id,status:novoSt,texto:"Status avancado para: "+novoSt,autor:sessao?.nome});
       setAgenda(p=>p.map(a=>a.id===item.id?{...a,status:novoSt}:a));
       if(sel?.id===item.id)setSel({...sel,status:novoSt});
     }catch(e){alert("Erro: "+e.message);}
@@ -2093,7 +2094,7 @@ function Agenda({agenda,setAgenda,clientes,sessao}){
   async function moverParaStatus(item,novoSt){
     try{
       await db.update("agenda",item.id,{status:novoSt});
-      await db.insert("agenda_updates",{agenda_id:item.id,status:novoSt,texto:"Movido via Kanban para: "+novoSt,autor:sessao.nome});
+      await db.insert("agenda_updates",{agenda_id:item.id,status:novoSt,texto:"Movido via Kanban para: "+novoSt,autor:sessao?.nome});
       setAgenda(p=>p.map(a=>a.id===item.id?{...a,status:novoSt}:a));
     }catch(e){alert("Erro ao mover: "+e.message);}
   }
@@ -2101,7 +2102,7 @@ function Agenda({agenda,setAgenda,clientes,sessao}){
   async function addUpdate(){
     if(!novoUpd.trim()||!sel)return;setSaving(true);
     try{
-      const upd=await db.insert("agenda_updates",{agenda_id:sel.id,status:novoStatus,texto:novoUpd,autor:sessao.nome});
+      const upd=await db.insert("agenda_updates",{agenda_id:sel.id,status:novoStatus,texto:novoUpd,autor:sessao?.nome});
       await db.update("agenda",sel.id,{status:novoStatus});
       const att={...sel,status:novoStatus};
       setAgenda(p=>p.map(a=>a.id===sel.id?att:a));setSel(att);
@@ -2382,7 +2383,7 @@ function Agenda({agenda,setAgenda,clientes,sessao}){
 function NovaImp({clientes,sessao,onSalvar,onVoltar}){
   const[f,setF]=useState({titulo:"",referencia:"",cliente_id:"",modal:"Marítimo",origem:"",destino:"",previsao_chegada:"",valor_invoice:"",observacoes:"",status:"Em Produção",demurrage:"0"});
   const[saving,setSaving]=useState(false);const upd=(k,v)=>setF(p=>({...p,[k]:v}));
-  async function salvar(){if(!f.titulo)return;setSaving(true);try{const cl=clientes.find(c=>c.id===f.cliente_id);const i=await db.insert("agenda",{...f,empresa_id:sessao.empresaId,cliente_nome:cl?.nome||"",valor_invoice:parseFloat(f.valor_invoice||0)||null,previsao_chegada:f.previsao_chegada||null,demurrage:parseFloat(f.demurrage||0)});onSalvar(i);}catch{alert("Erro.");}setSaving(false);}
+  async function salvar(){if(!f.titulo)return;setSaving(true);try{const cl=clientes.find(c=>c.id===f.cliente_id);const i=await db.insert("agenda",{...f,empresa_id:sessao?.empresaId,cliente_nome:cl?.nome||"",valor_invoice:parseFloat(f.valor_invoice||0)||null,previsao_chegada:f.previsao_chegada||null,demurrage:parseFloat(f.demurrage||0)});onSalvar(i);}catch{alert("Erro.");}setSaving(false);}
   return(
     <div className="card">
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}><BS onClick={onVoltar}>← Kanban</BS><PH titulo="Nova Importação" sub="Cadastrar novo processo na agenda Kanban"/></div>
@@ -2415,8 +2416,8 @@ function NovaImp({clientes,sessao,onSalvar,onVoltar}){
 function Usuarios({sessao}){
   const[users,setUsers]=useState([]);const[load,setLoad]=useState(true);const[mostra,setMostra]=useState(false);
   const[novo,setNovo]=useState({nome:"",email:"",senha:"",perfil:"operador"});const[saving,setSaving]=useState(false);
-  useEffect(()=>{db.get("usuarios",{empresa_id:sessao.empresaId}).then(u=>{setUsers(u||[]);setLoad(false);}).catch(()=>setLoad(false));},[]);
-  async function adicionar(){if(!novo.nome||!novo.email||!novo.senha)return;setSaving(true);try{const ex=await db.getOne("usuarios",{email:novo.email});if(ex){alert("Email já cadastrado.");setSaving(false);return;}const u=await db.insert("usuarios",{...novo,empresa_id:sessao.empresaId,ativo:true});setUsers(p=>[...p,u]);setNovo({nome:"",email:"",senha:"",perfil:"operador"});setMostra(false);}catch{alert("Erro.");}setSaving(false);}
+  useEffect(()=>{db.get("usuarios",{empresa_id:sessao?.empresaId}).then(u=>{setUsers(u||[]);setLoad(false);}).catch(()=>setLoad(false));},[]);
+  async function adicionar(){if(!novo.nome||!novo.email||!novo.senha)return;setSaving(true);try{const ex=await db.getOne("usuarios",{email:novo.email});if(ex){alert("Email já cadastrado.");setSaving(false);return;}const u=await db.insert("usuarios",{...novo,empresa_id:sessao?.empresaId,ativo:true});setUsers(p=>[...p,u]);setNovo({nome:"",email:"",senha:"",perfil:"operador"});setMostra(false);}catch{alert("Erro.");}setSaving(false);}
   async function toggle(u){try{await db.update("usuarios",u.id,{ativo:!u.ativo});setUsers(p=>p.map(x=>x.id===u.id?{...x,ativo:!x.ativo}:x));}catch{alert("Erro.");}}
   return(
     <div className="card">
@@ -2430,10 +2431,10 @@ function Usuarios({sessao}){
       {load?<Spin/>:users.map(u=>(
         <div key={u.id} style={{padding:"9px 12px",borderRadius:9,background:"#fff",border:"1px solid #E5E7EB",display:"flex",alignItems:"center",gap:9,marginBottom:5}}>
           <div style={{width:32,height:32,borderRadius:8,background:VP.grad,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:"#fff",flexShrink:0}}>{u.nome.charAt(0)}</div>
-          <div style={{flex:1}}><div style={{fontWeight:700,fontSize:12,color:VP.dark}}>{u.nome}{u.id===sessao.userId&&<span style={{fontSize:8,color:VP.azul,marginLeft:4}}>(você)</span>}</div><div style={{fontSize:9,color:"#9CA3AF",marginTop:1}}>{u.email} · {u.perfil}</div></div>
+          <div style={{flex:1}}><div style={{fontWeight:700,fontSize:12,color:VP.dark}}>{u.nome}{u.id===sessao?.userId&&<span style={{fontSize:8,color:VP.azul,marginLeft:4}}>(você)</span>}</div><div style={{fontSize:9,color:"#9CA3AF",marginTop:1}}>{u.email} · {u.perfil}</div></div>
           <div style={{display:"flex",gap:5,alignItems:"center"}}>
             <span style={{fontSize:9,padding:"2px 8px",borderRadius:20,fontWeight:600,background:u.ativo?"#F0FDF4":"#FEF2F2",color:u.ativo?"#16A34A":"#DC2626",border:`1px solid ${u.ativo?"#86EFAC":"#FCA5A5"}`}}>{u.ativo?"Ativo":"Inativo"}</span>
-            {u.id!==sessao.userId&&<button onClick={()=>toggle(u)} style={bsSty}>{u.ativo?"Desativar":"Ativar"}</button>}
+            {u.id!==sessao?.userId&&<button onClick={()=>toggle(u)} style={bsSty}>{u.ativo?"Desativar":"Ativar"}</button>}
           </div>
         </div>
       ))}
@@ -2452,13 +2453,13 @@ function CadNCM({sessao}){
   const[orgaos,setOrgaos]=useState([]);
   useEffect(()=>{
     Promise.all([
-      db.get("ncm",{empresa_id:sessao.empresaId}),
+      db.get("ncm",{empresa_id:sessao?.empresaId}),
     ]).then(([n])=>{setItems(n||[]);}).catch(()=>{}).finally(()=>setLoad(false));
   },[]);
   const filtrado=items.filter(x=>!busca||x.codigo_ncm?.includes(busca)||x.descricao?.toLowerCase().includes(busca.toLowerCase()));
   function abrir(x){setEdit(x||null);setForm(x?{...vazio,...x}:vazio);if(x?.id)db.get("tratamento_administrativo",{ncm_id:x.id}).then(r=>setOrgaos(r||[])).catch(()=>setOrgaos([]));else setOrgaos([]);setView("form");}
   async function salvar(){if(!form.codigo_ncm||!form.descricao)return;setSaving(true);
-    try{const dados={...form,empresa_id:sessao.empresaId,aliquota_ii:parseFloat(form.aliquota_ii||0),aliquota_ipi:parseFloat(form.aliquota_ipi||0),aliquota_pis:parseFloat(form.aliquota_pis||2.1),aliquota_cofins:parseFloat(form.aliquota_cofins||9.65),ex_tarifario_aliq:parseFloat(form.ex_tarifario_aliq||0)||null};
+    try{const dados={...form,empresa_id:sessao?.empresaId,aliquota_ii:parseFloat(form.aliquota_ii||0),aliquota_ipi:parseFloat(form.aliquota_ipi||0),aliquota_pis:parseFloat(form.aliquota_pis||2.1),aliquota_cofins:parseFloat(form.aliquota_cofins||9.65),ex_tarifario_aliq:parseFloat(form.ex_tarifario_aliq||0)||null};
     if(edit){const a=await db.update("ncm",edit.id,dados);setItems(p=>p.map(x=>x.id===edit.id?a:x));}
     else{const n=await db.insert("ncm",dados);setItems(p=>[n,...p]);}setView("lista");}catch(e){alert("Erro: "+e.message);}setSaving(false);}
   async function excluir(id){if(!window.confirm("Excluir NCM?"))return;try{await db.delete("ncm",id);setItems(p=>p.filter(x=>x.id!==id));}catch{alert("Erro.");}}
@@ -2466,7 +2467,7 @@ function CadNCM({sessao}){
     const org=window.prompt("Órgão anuente (ANVISA, MAPA, INMETRO, ANATEL, EXÉRCITO, SDA, DPF...):");
     if(!org)return;
     const tipo=window.prompt("Tipo de documento exigido (ex: Registro, Licença, Certificado):")
-    try{const n=await db.insert("tratamento_administrativo",{empresa_id:sessao.empresaId,ncm_id:ncmId,orgao_anuente:org.trim().toUpperCase(),tipo_documento:tipo||"",obrigatorio:true});setOrgaos(p=>[...p,n]);}catch(e){alert("Erro: "+e.message);}
+    try{const n=await db.insert("tratamento_administrativo",{empresa_id:sessao?.empresaId,ncm_id:ncmId,orgao_anuente:org.trim().toUpperCase(),tipo_documento:tipo||"",obrigatorio:true});setOrgaos(p=>[...p,n]);}catch(e){alert("Erro: "+e.message);}
   }
   async function remOrgao(id){try{await db.delete("tratamento_administrativo",id);setOrgaos(p=>p.filter(x=>x.id!==id));}catch{alert("Erro.");}}
 
@@ -2604,12 +2605,12 @@ function CadBancos({sessao}){
   const[view,setView]=useState("lista");const[edit,setEdit]=useState(null);const[saving,setSaving]=useState(false);const[filtro,setFiltro]=useState("todos");
   const vazio={nome:"",agencia:"",conta:"",swift:"",iban:"",pais:"Brasil",moeda:"BRL",tipo:"proprio",observacoes:"",ativo:true};
   const[form,setForm]=useState(vazio);const upd=(k,v)=>setForm(p=>({...p,[k]:v}));
-  useEffect(()=>{db.get("bancos",{empresa_id:sessao.empresaId}).then(r=>setItems(r||[])).catch(()=>{}).finally(()=>setLoad(false));},[]);
+  useEffect(()=>{db.get("bancos",{empresa_id:sessao?.empresaId}).then(r=>setItems(r||[])).catch(()=>{}).finally(()=>setLoad(false));},[]);
   const filtrado=items.filter(x=>filtro==="todos"||x.tipo===filtro);
   function abrir(x){setEdit(x||null);setForm(x?{...vazio,...x}:vazio);setView("form");}
   async function excluir(id){if(!window.confirm("Excluir banco?"))return;try{await db.delete("bancos",id);setItems(p=>p.filter(x=>x.id!==id));}catch{alert("Erro.");}}
   async function salvar(){if(!form.nome)return;setSaving(true);
-    try{const dados={...form,empresa_id:sessao.empresaId};
+    try{const dados={...form,empresa_id:sessao?.empresaId};
     if(edit){const a=await db.update("bancos",edit.id,dados);setItems(p=>p.map(x=>x.id===edit.id?a:x));}
     else{const n=await db.insert("bancos",dados);setItems(p=>[n,...p]);}setView("lista");}catch(e){alert("Erro: "+e.message);}setSaving(false);}
   const TIPO_COR={proprio:VP.azul,correspondente:"#8B5CF6",beneficiario:"#10B981"};
