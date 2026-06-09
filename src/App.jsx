@@ -221,19 +221,15 @@ async function callIA(system,user,maxTokens=900){
   }catch(e){console.error("IA erro:",e);return "Erro ao chamar IA: "+e.message;}
 }
 async function iaNCM(ncm,desc){
+  const prompt=[
+    "Produto:"+desc+" NCM:"+ncm,
+    "Retorne SOMENTE este JSON com aliquotas vigentes na importacao:",
+    '{"ncm_validado":"","ncm_original_correto":false,"descricao_tec":"","ii":0,"ipi":0,"pis":2.1,"cofins":9.65,"justificativa":""}',
+    "REGRAS: ii=aliquota TEC, ipi=aliquota IPI, pis=2.1 padrao Lei 10865/2004, cofins=9.65 padrao. NUNCA retorne pis=0 ou cofins=0 para produtos normais."
+  ].join("\n");
   const txt=await callIA(
-    "Especialista TEC/TIPI e tributacao de importacao brasileira. Responda SOMENTE JSON valido sem markdown.",
-    "Produto:\""+desc+"\" NCM:\""+ncm+"\"
-
-Retorne SOMENTE este JSON com aliquotas vigentes na importacao:
-{\"ncm_validado\":\"\",\"ncm_original_correto\":false,\"descricao_tec\":\"\",\"ii\":0,\"ipi\":0,\"pis\":2.1,\"cofins\":9.65,\"justificativa\":\"\"}
-
-REGRAS OBRIGATORIAS:
-- ii: aliquota TEC vigente para este NCM na importacao (%)
-- ipi: aliquota IPI para importacao (%)
-- pis: 2.1 (padrao Lei 10.865/2004). Se este NCM tiver aliquota diferenciada, informe o valor correto
-- cofins: 9.65 (padrao Lei 10.865/2004). Se este NCM tiver aliquota diferenciada, informe o valor correto
-- NUNCA retorne pis=0 ou cofins=0 para produtos tributados normalmente"
+    "Especialista TEC/TIPI brasileira. Responda SOMENTE JSON valido sem markdown.",
+    prompt
   );
   try{return JSON.parse(txt);}catch{return null;}
 }
@@ -273,11 +269,7 @@ if(typeof window!=="undefined") window._vpGerarPDF=gerarPDF;
 // ══════════════════════════════════════════════════
 // ESTILOS GLOBAIS
 // ══════════════════════════════════════════════════
-const GS="@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');" +
-"*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'DM Sans',sans-serif;background:#F2F7FF;}" +
-"input,select,textarea,button{font-family:'DM Sans',sans-serif;}input::placeholder,textarea::placeholder{color:#94a3b8;}" +
-"::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:#F2F7FF;}::-webkit-scrollbar-thumb{background:#CACACA;border-radius:3px;}" +
-"@keyframes spin{to{transform:rotate(360deg)}}@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}.card{animation:fi .22s ease}";
+const GS="@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap'); *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'DM Sans',sans-serif;background:#F2F7FF;} input,select,textarea,button{font-family:'DM Sans',sans-serif;}input::placeholder,textarea::placeholder{color:#94a3b8;} ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:#F2F7FF;}::-webkit-scrollbar-thumb{background:#CACACA;border-radius:3px;} @keyframes spin{to{transform:rotate(360deg)}}@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}.card{animation:fi .22s ease}";
 
 // ── UI ATOMS ──
 const iSty={width:"100%",padding:"9px 11px",borderRadius:8,border:"1px solid #D1D5DB",background:"#fff",color:"#1C1B29",fontSize:12,outline:"none",fontFamily:"'DM Sans',sans-serif",transition:"border-color .15s"};
