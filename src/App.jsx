@@ -798,7 +798,6 @@ function Simulador({clientes,fornecedores,transportadoras,corretoras,setSimulaco
         const fr=tPeso&&pT>0?pp/pT:(tI>0?vt/tI:0);
         const cr=cT*fr; // custo rateado em USD
         const al=p.al||{II:0,IPI:0,PIS:0,COFINS:0};
-        let imp={},tImpUSD=0,creditoBRL=0;
         // ════════════════════════════════════════════════════════════
         // BASE ADUANEIRA (Valor Aduaneiro — VA)
         // VA = valor da mercadoria (CIF) + frete + seguro rateados
@@ -810,14 +809,11 @@ function Simulador({clientes,fornecedores,transportadoras,corretoras,setSimulaco
         let imp={},tImpUSD=0;
 
         if(modalidade==="Simplificada"){
-          // ── SIMPLIFICADA ─────────────────────────────────────────
-          // II unificado = 60% do VA. Sem IPI, PIS, COFINS separados.
-          // Sem direito a créditos.
-          const ii=base*0.60;
-          const bI=(base+ii)/(1-icms);
-          const ic=bI*icms;
-          imp={II:ii*cambio,ICMS:ic*cambio};
-          tImpUSD=ii+ic;
+          const iiS=base*0.60;
+          const bIS=(base+iiS)/(1-icms);
+          const icS=bIS*icms;
+          imp={II:iiS*cambio,ICMS:icS*cambio};
+          tImpUSD=iiS+icS;
 
         }else{
           // ── FORMAL ────────────────────────────────────────────────
