@@ -468,7 +468,7 @@ function Sistema({sessao,onLogout}){
               {pag==="transportadoras"&&<Transportadoras tr={transportadoras} setTr={setTransportadoras}/>}
               {pag==="corretoras"&&<Corretoras corretoras={corretoras} setCorretoras={setCorretoras} sessao={sessao}/>}
               {pag==="despachantes"&&<Despachantes despachantes={despachantes} setDespachantes={setDespachantes} sessao={sessao}/>}
-              {pag==="produtos"&&<Produtos produtos={produtos} setProdutos={setProdutos} fornecedores={fornecedores}/>}
+              {pag==="produtos"&&<Produtos produtos={produtos} setProdutos={setProdutos} fornecedores={fornecedores} sessao={sessao}/>}
               {pag==="usuarios"&&<Usuarios sessao={sessao}/>}
               {pag==="ncm"&&<CadNCM sessao={sessao}/>}
               {pag==="moedas_cad"&&<CadMoedas/>}
@@ -765,9 +765,7 @@ function Simulador({clientes,fornecedores,transportadoras,corretoras,setSimulaco
     }
     setLoadC(false);
   }
-  const getCambio=useCallback(()=>{const b=cambioFixo?parseFloat(cambioFixo):(cambioAuto||0);return b*(1+parseFloat(margem||0)/100);},[cambioFixo,cambioAuto,margem]);
-
-  async function consultarNCM(idx){
+    async function consultarNCM(idx){
     const p=prods[idx];if(!p.ncm&&!p.desc)return;
     setProds(prev=>prev.map((x,i)=>i===idx?{...x,loadNCM:true,aviso:null}:x));
     const r=await iaNCM(p.ncm,p.desc);
@@ -1936,7 +1934,7 @@ function Corretoras({corretoras,setCorretoras,sessao}){
 function Produtos({produtos,setProdutos,fornecedores,sessao}){
   const[view,setView]=useState("lista");const[edit,setEdit]=useState(null);const[saving,setSaving]=useState(false);const[busca,setBusca]=useState("");
   const[ncms,setNcms]=useState([]);
-  useEffect(()=>{db.get("ncm",{empresa_id:sessao.empresaId}).then(r=>setNcms(r||[])).catch(()=>{});},[]);
+  useEffect(()=>{db.get("ncm",{empresa_id:sessao.empresaId}).then(r=>setNcms(r||[])).catch(()=>setNcms([]));},[]);
   const vazio={sku:"",descricao:"",descricao_ingles:"",marca:"",fabricante_id:"",ncm_id:"",ncm_codigo:"",unidade:"UN",peso_liquido:"",peso_bruto:"",comprimento:"",largura:"",altura:"",cubagem:"",requer_anvisa:false,numero_registro_anvisa:"",tipo_registro_anvisa:"",validade_registro_anvisa:"",requer_inmetro:false,numero_inmetro:"",requer_anatel:false,numero_anatel:"",custo_medio_brl:"",preco_venda:"",observacoes:"",ativo:true};
   const[form,setForm]=useState(vazio);const upd=(k,v)=>setForm(p=>({...p,[k]:v}));
   const filtrado=produtos.filter(p=>!busca||p.descricao?.toLowerCase().includes(busca.toLowerCase())||p.sku?.toLowerCase().includes(busca.toLowerCase())||p.marca?.toLowerCase().includes(busca.toLowerCase()));
@@ -1964,8 +1962,8 @@ function Produtos({produtos,setProdutos,fornecedores,sessao}){
         custo_medio_brl:parseFloat(form.custo_medio_brl||0)||null,
         preco_venda:parseFloat(form.preco_venda||0)||null,
       };
-      if(edit){const a=await db.update("produtos",edit.id,dados)||await db.update("produtos_importados",edit.id,dados);setProdutos(p=>p.map(x=>x.id===edit.id?{...x,...dados}:x));}
-      else{const n=await db.insert("produtos",dados)||await db.insert("produtos_importados",dados);setProdutos(p=>[n,...p]);}
+      if(edit){const a=await db.update("produtos_importados",edit.id,dados);setProdutos(p=>p.map(x=>x.id===edit.id?{...x,...dados}:x));}
+      else{const n=await db.insert("produtos_importados",dados);setProdutos(p=>[n,...p]);}
       setView("lista");
     }catch(e){alert("Erro: "+e.message);}setSaving(false);
   }
