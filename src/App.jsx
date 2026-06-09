@@ -221,7 +221,7 @@ async function callIA(system,user,maxTokens=900){
   }catch(e){console.error("IA erro:",e);return "Erro ao chamar IA: "+e.message;}
 }
 async function iaNCM(ncm,desc){
-  const prompt="Produto:"+desc+" NCM:"+ncm+" Retorne JSON: {ncm_validado:'',ncm_original_correto:false,descricao_tec:'',ii:0,ipi:0,pis:2.1,cofins:9.65,justificativa:''}";
+ const txt=await callIA("Especialista TEC/TIPI brasileira. Responda SOMENTE JSON valido.",["Produto:"+desc,"NCM:"+ncm,"JSON:{ncm_validado:'',ii:0,ipi:0,pis:2.1,cofins:9.65}"].join(" "));
   const txt=await callIA("Especialista TEC/TIPI brasileira. Responda SOMENTE JSON valido.",prompt);
   try{return JSON.parse(txt);}catch{return null;}
 }
