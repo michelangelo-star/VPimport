@@ -279,8 +279,8 @@ function SL({c}){return<div style={{fontSize:10,color:"#6B7280",fontWeight:600,m
 function SI({v,s,ph,tp="text"}){return<input value={v} onChange={e=>s(e.target.value)} placeholder={ph} type={tp} style={iSty} onFocus={e=>e.target.style.borderColor=VP.azul} onBlur={e=>e.target.style.borderColor="#D1D5DB"}/>;}
 // Input numérico com formatação pt-BR automática
 function NI({v,s,ph,dec=4}){
-  const[raw,setRaw]=React.useState(v!==undefined&&v!==""?String(v):"");
-  React.useEffect(()=>{
+  const[raw,setRaw]=useState(v!==undefined&&v!==""?String(v):"");
+  useEffect(()=>{
     if(v===undefined||v==="")setRaw("");
   },[v]);
   function handleChange(e){
@@ -470,9 +470,6 @@ function Sistema({sessao,onLogout}){
               {pag==="despachantes"&&<Despachantes despachantes={despachantes} setDespachantes={setDespachantes} sessao={sessao}/>}
               {pag==="produtos"&&<Produtos produtos={produtos} setProdutos={setProdutos} fornecedores={fornecedores} sessao={sessao}/>}
               {pag==="usuarios"&&<Usuarios sessao={sessao}/>}
-              {pag==="ncm"&&<CadNCM sessao={sessao}/>}
-              {pag==="moedas_cad"&&<CadMoedas/>}
-              {pag==="bancos_cad"&&<CadBancos sessao={sessao}/>}
               {pag==="ncm"&&<CadNCM sessao={sessao}/>}
               {pag==="moedas_cad"&&<CadMoedas/>}
               {pag==="bancos_cad"&&<CadBancos sessao={sessao}/>}
